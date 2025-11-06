@@ -14,11 +14,9 @@ def main() -> Tuple[Response, int]:
     date: str = data['date']
     output_path: str = data['raw_dir']
 
-    # deleting folder if exists
     if os.path.exists(output_path):
         shutil.rmtree(output_path)
 
-    # Recreating folders
     os.makedirs(output_path, exist_ok=True)
     auth_token: Optional[str] = os.environ.get('AUTH_TOKEN')
     if not auth_token:
@@ -30,16 +28,13 @@ def main() -> Tuple[Response, int]:
         response: requests.Response = requests.get(api_url, headers=headers)
 
         if response.status_code != 200:
-            # Обробити помилку
             break
 
         api_data: Any = response.json()
 
         if not api_data:
-            # Даних більше немає, виходимо з циклу
             break
 
-        # Зберігаємо "сторінку" в окремий файл
         file_path: str = os.path.join(output_path, f'sales_{date}_{page}.json')
         with open(file_path, 'w') as f:
             json.dump(api_data, f)
