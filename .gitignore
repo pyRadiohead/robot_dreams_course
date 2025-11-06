@@ -1,0 +1,18 @@
+# Virtual environments
+venv/
+.venv/
+env/
+.env/
+
+# Byte-code and optimized files
+__pycache__/
+*.pyc
+*$py.class
+
+# Editor/IDE files (e.g., VS Code, PyCharm)
+.idea/
+.vscode/
+
+# Build artifacts
+raw/
+stg/
