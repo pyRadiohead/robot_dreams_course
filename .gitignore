@@ -16,6 +16,20 @@ __pycache__/
 # Build artifacts
 raw/
 stg/
-/lec_02/extra_hw/db/rides.db
-/lec_03/pagila-data.sql
-/lec_03/pagila-schema.sql
+
+# Database files
+*.db
+*.sqlite
+*.sqlite3
+
+# Lecture 2 - Extra homework
+/lec_02/extra_hw/db/
+
+# Lecture 3 - Pagila database files (keep only homework SQL)
+/lec_03/pagila-*.sql
+/lec_03/pagila-*.backup
+/lec_03/*.sh
+/lec_03/docker-compose.yml
+/lec_03/LICENSE.txt
+/lec_03/README.md
+/lec_03/pgadmin/
