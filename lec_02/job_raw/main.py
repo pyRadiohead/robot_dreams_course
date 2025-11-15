@@ -1,47 +1,58 @@
+"""Presentation Layer - Flask API Endpoint"""
 import os
-import requests
-import json
-import shutil
 from typing import Tuple, Dict, Any, Optional
 from flask import Flask, request, jsonify, Response
+from bll.sales_service import SalesService
 
 app = Flask(__name__)
+
+# Configuration
+API_BASE_URL = "https://fake-api-vycpfa6oca-uc.a.run.app"
 
 
 @app.route('/', methods=['POST'])
 def main() -> Tuple[Response, int]:
+    """
+    Endpoint to fetch and store sales data
+
+    Request JSON:
+        {
+            "date": "2022-08-09",
+            "raw_dir": "/path/to/output"
+        }
+
+    Returns:
+        JSON response with status
+    """
+    # 1. Validate request
     data: Dict[str, Any] = request.json
-    date: str = data['date']
-    output_path: str = data['raw_dir']
 
-    if os.path.exists(output_path):
-        shutil.rmtree(output_path)
+    if not data:
+        return jsonify({"error": "No JSON data provided"}), 400
 
-    os.makedirs(output_path, exist_ok=True)
+    date: str = data.get('date')
+    output_path: str = data.get('raw_dir')
+
+    if not date or not output_path:
+        return jsonify({"error": "Missing required fields: date, raw_dir"}), 400
+
+    # 2. Check authentication
     auth_token: Optional[str] = os.environ.get('AUTH_TOKEN')
     if not auth_token:
         return jsonify({"message": "AUTH_TOKEN not set"}), 500
-    headers: Dict[str, str] = {'Authorization': auth_token}
-    page: int = 1
-    while True:
-        api_url: str = f"https://fake-api-vycpfa6oca-uc.a.run.app/sales?date={date}&page={page}"
-        response: requests.Response = requests.get(api_url, headers=headers)
 
-        if response.status_code != 200:
-            break
+    # 3. Execute business logic
+    try:
+        service = SalesService(API_BASE_URL)
+        result = service.process_sales_data(date, output_path, auth_token)
 
-        api_data: Any = response.json()
+        return jsonify(result), 201
 
-        if not api_data:
-            break
-
-        file_path: str = os.path.join(output_path, f'sales_{date}_{page}.json')
-        with open(file_path, 'w') as f:
-            json.dump(api_data, f)
-
-        page += 1
-
-    return jsonify({"message": f"Data saved to {output_path}"}), 201
+    except Exception as e:
+        return jsonify({
+            "error": "Processing failed",
+            "details": str(e)
+        }), 500
 
 
 if __name__ == "__main__":

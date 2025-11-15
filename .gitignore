@@ -16,3 +16,4 @@ __pycache__/
 # Build artifacts
 raw/
 stg/
+db/rides.sb

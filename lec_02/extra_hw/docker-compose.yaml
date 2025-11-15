@@ -1,0 +1,13 @@
+services:
+  trip_loader:
+    build: ./taxi_service
+    volumes:
+      - taxi_db_data:/app/data
+  aggregator:
+    build: ./aggregator_service
+    volumes:
+      - taxi_db_data:/app/data
+    depends_on:
+      - trip_loader
+volumes:
+  taxi_db_data:
