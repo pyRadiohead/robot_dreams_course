@@ -16,4 +16,6 @@ __pycache__/
 # Build artifacts
 raw/
 stg/
-db/rides.sb
+/lec_02/extra_hw/db/rides.db
+/lec_03/pagila-data.sql
+/lec_03/pagila-schema.sql
