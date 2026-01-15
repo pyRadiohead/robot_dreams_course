@@ -2,7 +2,7 @@
 venv/
 .venv/
 env/
-.env/
+.env
 
 # Byte-code and optimized files
 __pycache__/
@@ -19,3 +19,6 @@ stg/
 /lec_02/extra_hw/db/rides.db
 /lec_03/pagila-data.sql
 /lec_03/pagila-schema.sql
+
+# Documentation
+*.md
