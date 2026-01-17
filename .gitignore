@@ -19,3 +19,24 @@ stg/
 /lec_02/extra_hw/db/rides.db
 /lec_03/pagila-data.sql
 /lec_03/pagila-schema.sql
+
+# dbt
+logs/
+target/
+dbt_packages/
+.user.yml
+package-lock.yml
+
+# Lecture 07 - Airflow/dbt specific
+lecture_07/data-platform/.env
+lecture_07/data-platform/logs/
+lecture_07/data-platform/airflow/dags/dbt/logs/
+lecture_07/data-platform/airflow/dags/dbt/homework/logs/
+lecture_07/data-platform/airflow/dags/dbt/homework/target/
+lecture_07/data-platform/airflow/dags/dbt/homework/dbt_packages/
+lecture_07/data-platform/airflow/dags/dbt/.user.yml
+
+# Auto-generated documentation (lecture 07)
+lecture_07/data-platform/HOMEWORK_CHECKLIST.md
+lecture_07/data-platform/README.md
+lecture_07/data-platform/TESTING_GUIDE.md
