@@ -51,14 +51,14 @@ services:
     build:
       context: ./airflow
     container_name: airflow_webserver
+    user: "${AIRFLOW_UID:-50000}:0"
     command: webserver
     ports:
       - "8080:8080"
     volumes:
       - ./airflow/dags:/opt/airflow/dags
       - ./airflow/plugins:/opt/airflow/plugins
-      - ./dbt:/opt/airflow/dbt
-      - ./dbt/packages:/opt/airflow/dbt/packages.yml
+      - ./dbt_project:/opt/airflow/dbt_project
       - airflow_logs:/opt/airflow/logs
       - ml_models:/opt/airflow/models
       - ml_results:/opt/airflow/inference_results
@@ -106,12 +106,12 @@ services:
     build:
       context: ./airflow
     container_name: airflow_scheduler
+    user: "${AIRFLOW_UID:-50000}:0"
     command: scheduler
     volumes:
       - ./airflow/dags:/opt/airflow/dags
       - ./airflow/plugins:/opt/airflow/plugins
-      - ./dbt:/opt/airflow/dbt
-      - ./dbt/packages:/opt/airflow/dbt/packages.yml
+      - ./dbt_project:/opt/airflow/dbt_project
       - airflow_logs:/opt/airflow/logs
       - ml_models:/opt/airflow/models
       - ml_results:/opt/airflow/inference_results

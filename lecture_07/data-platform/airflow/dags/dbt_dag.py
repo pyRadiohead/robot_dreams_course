@@ -9,7 +9,7 @@ from dbt_operator import DbtOperator
 
 # Get environment variables
 ANALYTICS_DB = os.getenv('ANALYTICS_DB', 'analytics')
-PROJECT_DIR = os.getenv('AIRFLOW_HOME')+"/dags/dbt/my_dbt_project"
+PROJECT_DIR = "/opt/airflow/dbt_project/my_dbt_project"
 PROFILE = 'my_dbt_project'
 
 default_args = {
