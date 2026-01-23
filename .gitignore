@@ -2,6 +2,11 @@
 venv/
 .venv/
 env/
+
+# Environment files (IMPORTANT: no trailing slash for files!)
+.env
+.env.*
+*.env
 .env/
 
 # Byte-code and optimized files
@@ -19,3 +24,7 @@ stg/
 /lec_02/extra_hw/db/rides.db
 /lec_03/pagila-data.sql
 /lec_03/pagila-schema.sql
+
+/lec_14/*                  # Ignore all files/folders in lec_14/
+!/lec_14/notebooks/        # Except the notebooks folder
+!/lec_14/notebooks/**      # And everything inside it
