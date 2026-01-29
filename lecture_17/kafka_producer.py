@@ -1,7 +1,7 @@
 import time
 import random
 from kafka import KafkaProducer
-from fastavro import parse_schema, schemaless_writer
+from fastavro import parse_schema, schemaless_writer, writer
 import io
 
 #Define Avro weather sensor schema
@@ -29,7 +29,10 @@ def serialize_avro(data: dict, schema) -> bytes:
     # Create a buffer to hold the serialized data
     out = io.BytesIO()
 
-    # Write the data to the buffer in Avro format
+    # The issue is that fastavro.writer() creates an Avro Object Container File format (with headers),
+    # but Spark's from_avro() expects raw Avro binary without the container wrapper.
+
+    # writer(out, schema, [data])
     schemaless_writer(out, schema, data)
 
     # Get the serialized bytes from the buffer
