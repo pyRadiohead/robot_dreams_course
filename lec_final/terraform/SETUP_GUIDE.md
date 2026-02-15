@@ -144,6 +144,7 @@ echo "Airflow URL: $(terraform output -raw airflow_web_ui)"
 ```
 
 Open the URL in your browser. Login with the credentials from `terraform.tfvars`.
+Note: It may take 5-10 minutes after deployment for the ECS tasks to fully start.
 
 ## Step 8: Connect to Redshift
 
@@ -152,4 +153,99 @@ Access Redshift via the AWS Console:
 2. Click on your workgroup
 3. Click "Query data" to open the query editor
 4. Connect using the admin credentials from `terraform.tfvars`
+
+---
+
+## Teardown: Destroy All Resources
+
+**⚠️ Do this when you're done to avoid ongoing charges!**
+
+```bash
+cd lec_final/terraform
+
+# Destroy all infrastructure (type 'yes' when prompted)
+# S3 buckets have force_destroy=true, so they'll be deleted even with contents
+terraform destroy
+```
+
+If `terraform destroy` fails on some resources, run it again. Some resources
+have dependencies that may need multiple passes.
+
+### Clean up state backend (if you set one up)
+
+```bash
+aws s3 rb s3://YOUR_PROJECT_NAME-terraform-state --force
+aws dynamodb delete-table --table-name terraform-state-lock
+```
+
+## Troubleshooting
+
+### "Error creating Redshift Serverless Namespace"
+- Ensure your password meets requirements: min 8 chars, uppercase, lowercase, number
+- Check that the namespace name doesn't already exist
+
+### "Error creating DB Instance: DBInstanceAlreadyExists"
+- A previous deployment may not have been fully cleaned up
+- Check the RDS console and delete any leftover instances
+
+### Airflow UI not accessible
+- Wait 5-10 minutes after deployment for ECS tasks to start
+- Check ECS task logs in CloudWatch: `/aws/ecs/<project_name>-airflow`
+- Ensure the ALB security group allows port 80 inbound
+
+### Glue Crawler fails
+- Verify data was uploaded to the correct S3 path (`raw/` prefix)
+- Check the Glue service role has S3 permissions
+- Review crawler logs in CloudWatch
+
+### NAT Gateway costs
+- The NAT Gateway is the biggest always-on cost (~$1.08/day)
+- If you need to pause costs but keep the config, you can:
+  ```bash
+  # Scale down ECS services to 0
+  aws ecs update-service --cluster <cluster> --service <service> --desired-count 0
+  ```
+- For full cost savings, run `terraform destroy`
+
+## Architecture Overview
+
+```
+┌─────────────────────────────────────────────────────────┐
+│ VPC (10.0.0.0/16)                                       │
+│                                                         │
+│  Public Subnets          Private Subnets                │
+│  ┌──────────────┐        ┌──────────────────────┐       │
+│  │ ALB (Airflow)│        │ RDS PostgreSQL       │       │
+│  │ NAT Gateway  │        │ Redshift Serverless  │       │
+│  │ ECS Fargate  │───────▶│ EFS (DAGs + Config)  │       │
+│  └──────────────┘        └──────────────────────┘       │
+│                                                         │
+│  S3 Buckets (outside VPC):                              │
+│  • data-lake-{account_id}  (raw/bronze/silver/gold)     │
+│  • airflow-{account_id}    (DAGs, config)               │
+│  • athena-results-{account_id}                          │
+│                                                         │
+│  Glue: Database + S3 Crawler + Redshift Crawler         │
+│  Athena: Workgroup for ad-hoc queries                   │
+│  EventBridge: DAG sync every 5 minutes                  │
+└─────────────────────────────────────────────────────────┘
+```
+
+## File Structure
+
+```
+lec_final/terraform/
+├── main.tf                    # Provider, backend config
+├── variables.tf               # Input variables with defaults
+├── vpc.tf                     # VPC, subnets, IGW, NAT, routes
+├── s3.tf                      # S3 buckets (data lake, airflow, athena)
+├── iam.tf                     # All IAM roles and policies
+├── glue.tf                    # Glue database, crawlers, connections
+├── redshift.tf                # Redshift Serverless + Athena
+├── airflow.tf                 # ECS, RDS, EFS, ALB, EventBridge
+├── outputs.tf                 # Output values
+├── terraform.tfvars.example   # Example variable values
+├── .gitignore                 # Ignore state files and secrets
+└── SETUP_GUIDE.md             # This file
+```
 

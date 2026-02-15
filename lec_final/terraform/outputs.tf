@@ -23,14 +23,19 @@ output "glue_crawler_name" {
   value       = aws_glue_crawler.s3_crawler.name
 }
 
-output "redshift_endpoint" {
-  description = "Redshift Serverless Workgroup Endpoint"
-  value       = aws_redshiftserverless_workgroup.main.endpoint[0].address
+output "warehouse_endpoint" {
+  description = "Data Warehouse (RDS PostgreSQL) Endpoint"
+  value       = aws_db_instance.warehouse.endpoint
 }
 
-output "redshift_workgroup_name" {
-  description = "Redshift Serverless Workgroup Name"
-  value       = aws_redshiftserverless_workgroup.main.workgroup_name
+output "warehouse_database_name" {
+  description = "Data Warehouse Database Name"
+  value       = aws_db_instance.warehouse.db_name
+}
+
+output "warehouse_crawler_name" {
+  description = "Glue Warehouse Crawler Name"
+  value       = aws_glue_crawler.warehouse_crawler.name
 }
 
 output "airflow_web_ui" {

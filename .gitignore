@@ -19,3 +19,34 @@ stg/
 /lec_02/extra_hw/db/rides.db
 /lec_03/pagila-data.sql
 /lec_03/pagila-schema.sql
+/lec_final/GLUE_JOBS_AND_DAGS_SUMMARY.md
+# Terraform: Exclude sensitive and state files
+/lec_final/terraform/*.tfstate
+/lec_final/terraform/*.tfstate.*
+/lec_final/terraform/*.tfvars
+/lec_final/terraform/*.tfvars.example
+/lec_final/terraform/.terraform/
+/lec_final/terraform/.terraform.lock.hcl
+/lec_final/terraform/apply.log
+/lec_final/terraform/crash.log
+/lec_final/terraform/override.tf
+/lec_final/terraform/override.tf.json
+/lec_final/terraform/*_override.tf
+/lec_final/terraform/*_override.tf.json
+lec_final/terraform/create_glue_jobs.sh
+
+# Deployment guides and summaries (temporary/personal notes)
+lec_final/GLUE_JOBS_AND_DAGS_SUMMARY.md
+
+# AWS credentials and secrets
+*.pem
+*.key
+.aws/
+credentials
+secrets.yml
+secrets.yaml
+.env
+*.env
+
+# Data files (too large for git)
+lec_final/data/

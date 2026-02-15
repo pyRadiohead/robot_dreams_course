@@ -1,7 +1,8 @@
 # ===== S3 BUCKETS =====
 
 resource "aws_s3_bucket" "data_lake" {
-  bucket = "${var.project_name}-data-lake-${data.aws_caller_identity.current.account_id}"
+  bucket        = "${var.project_name}-data-lake-${data.aws_caller_identity.current.account_id}"
+  force_destroy = true # Allows terraform destroy to delete non-empty buckets
 
   tags = { Name = "${var.project_name}-data-lake" }
 }
@@ -23,7 +24,8 @@ resource "aws_s3_bucket_public_access_block" "data_lake" {
 }
 
 resource "aws_s3_bucket" "airflow" {
-  bucket = "${var.project_name}-airflow-${data.aws_caller_identity.current.account_id}"
+  bucket        = "${var.project_name}-airflow-${data.aws_caller_identity.current.account_id}"
+  force_destroy = true
 
   tags = { Name = "${var.project_name}-airflow" }
 }
@@ -45,7 +47,8 @@ resource "aws_s3_bucket_public_access_block" "airflow" {
 }
 
 resource "aws_s3_bucket" "athena_results" {
-  bucket = "${var.project_name}-athena-results-${data.aws_caller_identity.current.account_id}"
+  bucket        = "${var.project_name}-athena-results-${data.aws_caller_identity.current.account_id}"
+  force_destroy = true
 
   tags = { Name = "${var.project_name}-athena-results" }
 }

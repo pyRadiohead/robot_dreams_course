@@ -13,18 +13,30 @@ variable "aws_region" {
 variable "redshift_master_username" {
   type        = string
   default     = "admin"
-  description = "Redshift master username"
+  description = "Database master username (used for both warehouse and Redshift if enabled)"
 }
 
 variable "redshift_master_password" {
   type        = string
   sensitive   = true
-  description = "Redshift master password (min 8 chars, must include uppercase, lowercase, and number)"
+  description = "Database master password (min 8 chars, must include uppercase, lowercase, and number)"
 
   validation {
     condition     = length(var.redshift_master_password) >= 8
     error_message = "Password must be at least 8 characters."
   }
+}
+
+variable "warehouse_db_instance_class" {
+  type        = string
+  default     = "db.t3.small"
+  description = "RDS instance class for data warehouse (db.t3.small recommended for analytics workloads)"
+}
+
+variable "warehouse_db_allocated_storage" {
+  type        = number
+  default     = 50
+  description = "Initial allocated storage for warehouse database in GB"
 }
 
 variable "airflow_admin_username" {
